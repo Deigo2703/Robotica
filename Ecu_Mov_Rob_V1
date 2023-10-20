@@ -1,0 +1,116 @@
+
+import numpy as np
+import matplotlib.pyplot as plt
+euler= np.e
+pi= np.pi
+
+#INPUT
+ti=6    #Angulo giro
+di=6    #Distancia Avance
+Vmax=10
+Wmax=10
+alfa=0.1
+beta=9.9
+D=0.5 # distancia entre ruedas
+radio= 1  # Radio de la rueda
+#OUTPUT
+t=0     #Tiempo inicio
+dt=0    #Distancia Avanzada
+at=0    #Angulo girado
+td=0.1 #Tiempo muestreo
+
+at_=0
+Wt_=0
+
+dt_=0
+Vt_=0
+
+X=  np.array([])
+Y0= np.array([])
+Y1= np.array([])
+
+while(dt<di):
+
+    
+#_______________1______________________
+    et= ti-at
+
+#_______________2______________________
+    t+=1 
+
+    #encontrar wl y wr
+#_______________3______________________
+    Wl = (Vmax ** (-((et ** 2)/(2 * alfa ** 2))))+(D/2)*Wmax*((2/1+np.exp(-(et/beta)))-1)
+    Wr = (Vmax ** (-((et ** 2)/(2 * alfa ** 2))))+(D/2)*Wmax*((2/1+np.exp(-(et/beta)))-1)
+
+#_______________4______________________    
+    X= np.append(X, t)
+    Y0=np.append(Y0, t)
+    Y1=np.append(Y1, t)
+    print(Wl)
+    print(Wr)
+    
+#_______________5______________________    
+    Vt= 2*pi*radio*((0.5*Wl)+(0.5*Wr))
+    Wt= 2*pi*radio*(((-1/D)*Wl)+((-1/D)*Wr))
+
+
+#_______________6______________________
+#Comprobar que si funciona
+
+    if(t==0):
+        
+        at_=0
+        Wt_=0
+        
+        at= at_+td*((Wt+Wt_)/2)
+        
+        at_=at
+        Wt_=Wt    
+        
+    else:
+        
+        at= at_+td*((Wt+Wt_)/2)
+        
+        at_=at
+        Wt_=Wt
+
+  
+  
+  
+    #at, error = np.quad((Wt), 0, Tt)
+    
+    #at_, error = np.quad((Wt), 0, Tt-1)
+    
+    # at=at_+ td * ((Wt+Wt_)/2)
+    #a=at-at_ 
+    
+#_______________7______________________    
+
+
+    if(t==0):
+        
+        dt_=0
+        Vt_=0
+        
+        dt= dt_+td*((Vt+Vt_)/2)
+        
+        dt_=dt
+        Vt_=Vt    
+        
+    else:
+        
+        dt= dt_+td*((Vt+Vt_)/2)
+        
+        dt_=dt
+        Vt_=Vt
+   # dt, error = np.quad((Vt*dt), 0, Tt)
+    
+   # dt_, error = np.quad((Vt*dt), 0, Tt-1)
+    print(dt)
+    print(at)
+   
+
+plt.plot(X,Y0,'b')
+plt.plot(X,Y1,'g')
+plt.show()

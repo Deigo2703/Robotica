@@ -1,0 +1,67 @@
+
+import numpy as np
+euler= np.e
+pi= np.pi
+
+#INPUT
+ti=0    #Angulo giro
+di=0    #Distancia Avance
+Vmax=10
+Wmax=10
+alfa=0.1
+beta=0.1
+D=0.5 # distancia entre ruedas
+r= 1  # Radio de la rueda
+#OUTPUT
+t=0     #Tiempo
+dt=0    #Distancia Avanzada
+at=0    #Angulo girado
+Wl=0    #Velocidad angular motor izquierda
+Wr=0    #velocidad angular motor derecha
+
+while(dt<di):
+
+#_______________1______________________
+    et= ti-at
+
+#_______________2______________________
+
+    Vt0= 2*pi*r((0.5*Wl)+(0.5*Wr))
+    Wt0= 2*pi*r(((-1/D)*Wl)+((-1/D)*Wr))
+
+    t+=1
+
+
+    #encontrar wl y wr
+#_______________3______________________
+    Wl = (Vmax ** (-((et ** 2)/(2 * alfa ** 2))))+(D/2)*Wmax*((2/1+np.exp(-(et/beta)))-1)
+    Wr = (Vmax ** (-((et ** 2)/(2 * alfa ** 2))))+(D/2)*Wmax*((2/1+np.exp(-(et/beta)))-1)
+#    Wl = ((Vmax*euler)** (-((et ** 2)/(2 * alfa** 2))))+(D/2)*Wmax*((2/(1+euler**(-(et/beta))))-1)
+#    Wr = ((Vmax*euler)** (-((et ** 2)/(2 * alfa** 2))))+(D/2)*Wmax*((2/(1+euler**(-(et/beta))))-1)
+#_______________4______________________    
+    Tt= 3    
+    
+#_______________5______________________    
+    Vt= 2*pi*r((0.5*Wl)+(0.5*Wr))
+    Wt= 2*pi*r(((-1/D)*Wl)+((-1/D)*Wr))
+
+
+#_______________6______________________
+#Arreglarlo porque aun tiene fallas
+
+    at, error = np.quad((Wt), 0, Tt) #integrales
+    
+    at_, error = np.quad((Wt), 0, Tt-1) #integrales
+    
+    # at=at_+ td * ((Wt+Wt_)/2)
+    at = at + ((Wt+Wt0)/2)*Tt   #Ecuación recursiva desplazamiento angular
+    
+#_______________7______________________    
+
+    dt = dt + ((Vt+Vt0)/2)*Tt   #Ecuación recursiva desplazamiento lineal
+
+    dt, error = np.quad((Vt*dt), 0, Tt)  #integrales
+    
+    dt_, error = np.quad((Vt*dt), 0, Tt-1) #integrales
+
+    
